@@ -1,0 +1,50 @@
+*manager-lock.txt* Locking mechanism for manager.nvim       Last Change: 2026-02-22
+
+==============================================================================
+INTRODUCTION                                           *manager-lock*
+
+manager-lock is an extension for manager.nvim that provides a locking 
+mechanism for plugin loading. It allows you to defer plugin loading by 
+queuing `manager.load()` requests until the lock is released.
+
+==============================================================================
+USAGE                                             *manager-lock-usage*
+
+To use manager-lock, replace your `manager.load` calls with `lock.load` 
+(or `lock.locked_load`) and manage the lock state:
+
+>lua
+    local lock = require("manager-lock")
+
+    -- Lock the manager to queue load requests
+    lock.lock()
+
+    -- These plugins will not be loaded immediately
+    lock.load("telescope.nvim")
+    lock.load("plenary.nvim")
+
+    -- Unlock to execute all queued load requests at once
+    lock.unlock()
+<
+
+This is particularly useful when you need to ensure certain conditions 
+are met before any plugins are loaded into the runtime.
+
+==============================================================================
+FUNCTIONS                                     *manager-lock-functions*
+
+lock.lock()                                           *manager-lock.lock()*
+    Sets the lock state to true. While locked, all calls to `lock.load()` 
+    will add the plugin ID to an internal queue.
+
+lock.unlock()                                       *manager-lock.unlock()*
+    Sets the lock state to false and immediately processes all plugin 
+    IDs stored in the queue using `manager.load()`.
+
+lock.load({id})                                       *manager-lock.load()*
+lock.locked_load({id})                         *manager-lock.locked_load()*
+    If the manager is locked, the plugin `{id}` is added to the queue. 
+    If not locked, it calls `manager.load({id})` immediately.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
