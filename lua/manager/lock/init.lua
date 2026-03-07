@@ -1,6 +1,4 @@
 ---@class Manager
----@field is_locked boolean
----@field load_queue string[]
 ---@field lock fun(self: Manager)
 ---@field unlock fun(self: Manager)
 ---@field original_load fun(self: Manager, id: string)
